@@ -4,19 +4,21 @@ from deep_list import *
 import torch
 
 def main():
-    st.title("Dashboard")
+    st.title("TRACKING")
     inference_msg = st.empty()
     st.sidebar.title("Configuration")
 
     input_source = st.sidebar.radio(
      "Select input source",
-     ('RTSP', 'Webcam', 'Local video'))
+     ('RTSP CAMERA', 'WEBCAM', 'UPLOAD YOUR LOCAL VIDEO'))
 
-    conf_thres = st.sidebar.text_input("Class confidence threshold", "0.25")
+    conf_thres = st.sidebar.slider("Class confidence threshold",0.0, 1.0, 0.25, 0.01)
 
-    conf_thres_drift = st.sidebar.text_input("Class confidence threshold for drift dectection", "0.75")
+    conf_thres_drift = st.sidebar.slider("Class confidence threshold for drift dectection", 0.0, 1.0, 0.75, 0.01)
 
-    fps_drop_warn_thresh = st.sidebar.text_input("FPS drop warning threshold", "8")
+    fps_drop = np.arange(1,30,1)
+
+    fps_drop_warn_thresh = st.sidebar.selectbox("FPS drop warning threshold", fps_drop)
 
     save_output_video = st.sidebar.radio("Save output video?",('Yes', 'No'))
     if save_output_video == 'Yes':
@@ -33,7 +35,7 @@ def main():
         save_poor_frame__ = False
     
     # ------------------------- LOCAL VIDEO ------------------------------
-    if input_source == "Local video":
+    if input_source == "UPLOAD YOUR LOCAL VIDEO":
         video = st.sidebar.file_uploader("Select input video", type=["mp4", "avi"], accept_multiple_files=False)
         
         if st.sidebar.button("Start tracking"):
@@ -99,7 +101,7 @@ def main():
             inference_msg.success("Inference Complete!")
 
     # -------------------------- WEBCAM ----------------------------------
-    if input_source == "Webcam":
+    if input_source == "WEBCAM":
         
         if st.sidebar.button("Start tracking"):
 
@@ -162,7 +164,7 @@ def main():
             detect(source='0', stframe=stframe, kpi1_text=kpi1_text, kpi2_text=kpi2_text, kpi3_text=kpi3_text, js1_text=js1_text, js2_text=js2_text, js3_text=js3_text, conf_thres=float(conf_thres), nosave=nosave, display_labels=display_labels, conf_thres_drift = float(conf_thres_drift), save_poor_frame__= save_poor_frame__, inf_ov_1_text=inf_ov_1_text, inf_ov_2_text=inf_ov_2_text, inf_ov_3_text=inf_ov_3_text, inf_ov_4_text=inf_ov_4_text, fps_warn=fps_warn, fps_drop_warn_thresh = float(fps_drop_warn_thresh))
     
     # -------------------------- RTSP ------------------------------
-    if input_source == "RTSP":
+    if input_source == "RTSP CAMERA":
         
         rtsp_input = st.sidebar.text_input("IP Address", "rtsp://192.168.0.1")
         if st.sidebar.button("Start tracking"):
